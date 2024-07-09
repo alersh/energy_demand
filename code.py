@@ -100,11 +100,11 @@ def train(data, x, y):
     return {"linreg": model, "component": baseComponent}
     
 # validate: validate the model with the validation set
-def validate(model, data, x):
-    return test(model, data, x)
+def validate(model, data, variables):
+    return test(model, data, variables)
     
 # test: test the model with the test set
-def test(model, data, x):
+def test(model, data, variables):
     # create baseline values from the data
     base_data = model["component"]
     
@@ -113,7 +113,7 @@ def test(model, data, x):
         
     base_predict = np.fromiter((map(getBaseValue, range(0, data.shape[0]))), dtype = 'float64')
     
-    predicted = model["linreg"].predict(data[x]) + base_predict
+    predicted = model["linreg"].predict(data[variables]) + base_predict
     return predicted
 
 # evaluate: determine how close the predicted data are to the expected data
@@ -132,7 +132,12 @@ def run():
     test_score = evaluate(test_predicted, splits["test"]["Ontario_Demand"])
     return model, splits, test_predicted, test_score
 
-
+def summerDemandForecast(model, date, testData):
+    selectedData = testData[testData["Date"] == date][["Date", model["vars"]]]
+    predicted = test(model, selectedData, model["vars"])
+    return predicted
+    
+    
     
     
     
