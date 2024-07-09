@@ -132,10 +132,13 @@ def run():
     test_score = evaluate(test_predicted, splits["test"]["Ontario_Demand"])
     return model, splits, test_predicted, test_score
 
+# summerDemandForecast: get the 24 hour demand forecast
 def summerDemandForecast(model, date, testData):
-    selectedData = testData[testData["Date"] == date][["Date", model["vars"]]]
+    selectedData = testData[testData["Date"] == date].reset_index()
     predicted = test(model, selectedData, model["vars"])
-    return predicted
+    actual = selectedData["Ontario_Demand"]
+    difference = actual - predicted
+    return predicted, actual, difference
     
     
     
